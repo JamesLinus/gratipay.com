@@ -54,6 +54,20 @@ class Email(object):
 
     """
 
+    @classmethod
+    def from_email(cls, email_address):
+        """Return an existing participant based on email.
+        """
+        return cls.db.one("""
+
+            SELECT participants.*::participants
+              FROM participants
+              JOIN emails ON emails.participant_id = participants.id
+             WHERE emails.address=%s
+               AND emails.verified IS true
+
+        """, (email_address, ))
+
     def start_email_verification(self, email, *packages):
         """Add an email address for a participant.
 
